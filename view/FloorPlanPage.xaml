@@ -1,0 +1,293 @@
+﻿<Page x:Class="hotel.view.FloorPlanPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+      Title="FloorPlanPage"
+      d:DesignHeight="700"
+      d:DesignWidth="1000"
+      Background="#F7F3E8"
+      Loaded="Page_Loaded"
+      mc:Ignorable="d">
+
+    <Page.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="FloorPlanResources.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <!--  1. PAGE SLIDE IN ANIMATION (Global)  -->
+            <Storyboard x:Key="SlideInRight">
+                <DoubleAnimation Storyboard.TargetName="MainContent"
+                                 Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.X)"
+                                 From="1000"
+                                 To="0"
+                                 Duration="0:0:0.6">
+                    <DoubleAnimation.EasingFunction>
+                        <QuadraticEase EasingMode="EaseOut" />
+                    </DoubleAnimation.EasingFunction>
+                </DoubleAnimation>
+                <DoubleAnimation Storyboard.TargetName="MainContent"
+                                 Storyboard.TargetProperty="Opacity"
+                                 From="0"
+                                 To="1"
+                                 Duration="0:0:0.6" />
+            </Storyboard>
+
+            <!--  2. FURNITURE POP-UP ANIMATION (Internal)  -->
+            <!--  This runs after the page slides in to populate the room  -->
+            <Storyboard x:Key="FurnitureEntrance" BeginTime="0:0:0.4">
+
+                <!--  Bed Group: Pop In  -->
+                <DoubleAnimation Storyboard.TargetName="BedGroup"
+                                 Storyboard.TargetProperty="Opacity"
+                                 From="0" To="1" Duration="0:0:0.5" BeginTime="0:0:0" />
+                <DoubleAnimation Storyboard.TargetName="BedGroup"
+                                 Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
+                                 From="20" To="0" Duration="0:0:0.5" BeginTime="0:0:0">
+                    <DoubleAnimation.EasingFunction>
+                        <BackEase EasingMode="EaseOut" Amplitude="0.5"/>
+                    </DoubleAnimation.EasingFunction>
+                </DoubleAnimation>
+
+                <!--  Desk Group: Pop In  -->
+                <DoubleAnimation Storyboard.TargetName="DeskGroup"
+                                 Storyboard.TargetProperty="Opacity"
+                                 From="0" To="1" Duration="0:0:0.5" BeginTime="0:0:0.2" />
+                <DoubleAnimation Storyboard.TargetName="DeskGroup"
+                                 Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
+                                 From="20" To="0" Duration="0:0:0.5" BeginTime="0:0:0.2">
+                    <DoubleAnimation.EasingFunction>
+                        <BackEase EasingMode="EaseOut" Amplitude="0.5"/>
+                    </DoubleAnimation.EasingFunction>
+                </DoubleAnimation>
+
+                <!--  Wardrobe Group: Pop In  -->
+                <DoubleAnimation Storyboard.TargetName="WardrobeGroup"
+                                 Storyboard.TargetProperty="Opacity"
+                                 From="0" To="1" Duration="0:0:0.5" BeginTime="0:0:0.4" />
+                <DoubleAnimation Storyboard.TargetName="WardrobeGroup"
+                                 Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
+                                 From="20" To="0" Duration="0:0:0.5" BeginTime="0:0:0.4">
+                    <DoubleAnimation.EasingFunction>
+                        <BackEase EasingMode="EaseOut" Amplitude="0.5"/>
+                    </DoubleAnimation.EasingFunction>
+                </DoubleAnimation>
+
+                <!--  Bath Group: Pop In  -->
+                <DoubleAnimation Storyboard.TargetName="BathGroup"
+                                 Storyboard.TargetProperty="Opacity"
+                                 From="0" To="1" Duration="0:0:0.5" BeginTime="0:0:0.6" />
+                <DoubleAnimation Storyboard.TargetName="BathGroup"
+                                 Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
+                                 From="20" To="0" Duration="0:0:0.5" BeginTime="0:0:0.6">
+                    <DoubleAnimation.EasingFunction>
+                        <BackEase EasingMode="EaseOut" Amplitude="0.5"/>
+                    </DoubleAnimation.EasingFunction>
+                </DoubleAnimation>
+            </Storyboard>
+
+            <!--  DOOR SWING ANIMATION STYLE  -->
+            <Style x:Key="InteractiveDoorStyle" TargetType="Path">
+                <Setter Property="Cursor" Value="Hand"/>
+                <Setter Property="Stroke" Value="#5D4037"/>
+                <Setter Property="Fill" Value="#D7CCC8"/>
+                <Setter Property="Opacity" Value="0.8"/>
+                <Style.Triggers>
+                    <EventTrigger RoutedEvent="MouseLeftButtonDown">
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <!--  Swings the door open/closed (90 degrees)  -->
+                                <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(RotateTransform.Angle)"
+                                                 To="90" Duration="0:0:0.5" AutoReverse="True"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="Opacity" Value="1.0"/>
+                        <Setter Property="Fill" Value="#A1887F"/>
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+
+            <Style x:Key="NavButtonStyle" TargetType="Button">
+                <Setter Property="Background" Value="Transparent" />
+                <Setter Property="BorderBrush" Value="Transparent" />
+                <Setter Property="Cursor" Value="Hand" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border Background="{TemplateBinding Background}">
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="Opacity" Value="0.6" />
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+        </ResourceDictionary>
+    </Page.Resources>
+
+    <Grid>
+        <Button HorizontalAlignment="Left" VerticalAlignment="Top"
+                Margin="30,30,0,0"
+                Background="Transparent" 
+                BorderBrush="Transparent"
+                Cursor="Hand"
+                Click="HomeButton_Click">
+
+            <Button.Content>
+                <TextBlock Text="🏠︎" FontSize="20" Foreground="#623e2a" FontWeight="Bold" FontFamily="/assets/fonts/#Coco Gothic"/>
+            </Button.Content>
+
+            <Button.Style>
+                <Style TargetType="Button">
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="Button">
+                                <Border Background="{TemplateBinding Background}">
+                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                    <Style.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Opacity" Value="0.6"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </Button.Style>
+        </Button>
+
+        <Viewbox x:Name="MainContent" Stretch="Uniform">
+            <Viewbox.RenderTransform>
+                <TranslateTransform X="0" Y="0" />
+            </Viewbox.RenderTransform>
+
+            <Canvas x:Name="FloorCanvas" Width="900" Height="500">
+
+                <!--  1. WALLS & STRUCTURE  -->
+                <Path Data="M 200,50 H 750 V 450 H 200 V 50 Z" Fill="#EFEBE9" Stroke="#5D4037" StrokeThickness="4" />
+                <Path Data="M 550,50 V 200 H 750" Stroke="#5D4037" StrokeThickness="4" />
+                <Path Data="M 550,200 V 280" Stroke="#5D4037" StrokeThickness="4" />
+
+                <!--  2. FLOORING  -->
+                <Rectangle Canvas.Left="550" Canvas.Top="50" Width="200" Height="150" Fill="#D7CCC8" Opacity="0.3" />
+                <Rectangle Canvas.Left="550" Canvas.Top="200" Width="200" Height="250" Fill="#D7CCC8" Opacity="0.2" />
+
+                <!--  =============================================  -->
+                <!--  3. ANIMATED GROUPS (Opacity 0 initially)       -->
+                <!--  =============================================  -->
+
+                <!--  GROUP: BATHROOM  -->
+                <Canvas x:Name="BathGroup" Opacity="0">
+                    <Canvas.RenderTransform>
+                        <TranslateTransform Y="0"/>
+                    </Canvas.RenderTransform>
+
+                    <!-- Shower -->
+                    <Rectangle Canvas.Left="670" Canvas.Top="55" Width="75" Height="75" Stroke="#5D4037" />
+                    <Line Stroke="#5D4037" X1="670" X2="745" Y1="55" Y2="130" />
+                    <Line Stroke="#5D4037" X1="745" X2="670" Y1="55" Y2="130" />
+                    <!-- Toilet -->
+                    <Path Canvas.Left="620" Canvas.Top="60" Data="M 0,0 H 30 V 10 H 0 Z M 5,10 H 25 V 35 C 25,45 5,45 5,35 Z" Fill="#FFFFFF" Stroke="#5D4037" />
+                    <!-- Sink -->
+                    <Rectangle Canvas.Left="560" Canvas.Top="55" Width="50" Height="30" Fill="#FFFFFF" Stroke="#5D4037" />
+                    <Ellipse Canvas.Left="570" Canvas.Top="60" Width="30" Height="20" Stroke="#5D4037" />
+                    <!-- Bath Label -->
+                    <TextBlock Canvas.Left="600" Canvas.Top="100" FontFamily="/assets/fonts/#Coco Gothic" FontSize="14" Foreground="#5D4037" Opacity="0.5" Text="BATH" />
+                </Canvas>
+
+                <!--  GROUP: BEDROOM  -->
+                <Canvas x:Name="BedGroup" Opacity="0" Canvas.Left="220" Canvas.Top="110">
+                    <Canvas.RenderTransform>
+                        <TranslateTransform Y="0"/>
+                    </Canvas.RenderTransform>
+
+                    <!-- Bed Frame -->
+                    <Rectangle Canvas.Top="-56" Width="160" Height="200" Fill="#FFFFFF" Stroke="#5D4037" Canvas.Left="-16" />
+                    <!-- Pillows -->
+                    <Rectangle Canvas.Left="-19" Canvas.Top="-58" Width="60" Height="40" Stroke="#5D4037" />
+                    <Rectangle Canvas.Left="86" Canvas.Top="-58" Width="60" Height="40" Stroke="#5D4037" HorizontalAlignment="Left" VerticalAlignment="Center" />
+                    <!-- Sheet -->
+                    <Line Stroke="#5D4037" X1="0" X2="160" Y1="100" Y2="100" />
+                    <!-- Tables -->
+                    <Rectangle Width="40" Height="30" Stroke="#5D4037" />
+                    <Rectangle Canvas.Top="250" Width="40" Height="30" Stroke="#5D4037" />
+                    <!-- Label -->
+                    <TextBlock Canvas.Left="118" Canvas.Top="83" FontFamily="/assets/fonts/#Coco Gothic" FontSize="30" Foreground="#5D4037" Opacity="0.5" Text="BEDROOM" />
+                </Canvas>
+
+                <!--  GROUP: DESK & TV  -->
+                <Canvas x:Name="DeskGroup" Opacity="0">
+                    <Canvas.RenderTransform>
+                        <TranslateTransform Y="0"/>
+                    </Canvas.RenderTransform>
+
+                    <!-- TV Unit -->
+                    <Rectangle Canvas.Left="530" Canvas.Top="280" Width="20" Height="120" Fill="#8D6E63" Stroke="#5D4037" />
+                    <Rectangle Canvas.Left="520" Canvas.Top="310" Width="10" Height="60" Fill="Black" />
+                    <!-- Desk -->
+                    <Rectangle Canvas.Left="220" Canvas.Top="410" Width="120" Height="40" Stroke="#5D4037" />
+                    <Ellipse Canvas.Left="270" Canvas.Top="390" Width="25" Height="25" Stroke="#5D4037" />
+                </Canvas>
+
+                <!--  GROUP: WARDROBE  -->
+                <Canvas x:Name="WardrobeGroup" Opacity="0">
+                    <Canvas.RenderTransform>
+                        <TranslateTransform Y="0"/>
+                    </Canvas.RenderTransform>
+
+                    <Rectangle Canvas.Left="560" Canvas.Top="220" Width="30" Height="100" Stroke="#5D4037" />
+                    <Line Stroke="#5D4037" X1="560" X2="590" Y1="220" Y2="320" />
+                    <Line Stroke="#5D4037" X1="560" X2="590" Y1="320" Y2="220" />
+                </Canvas>
+
+                <!--  4. INTERACTIVE DOORS (Click to Swing)  -->
+
+                <!--  Main Door  -->
+                <Path Canvas.Left="750" Canvas.Top="380"
+                      Data="M 0,0 V 50 H -50 A 50,50 0 0 1 0,0"
+                      Style="{StaticResource InteractiveDoorStyle}"
+                      RenderTransformOrigin="0,0">
+                    <Path.RenderTransform>
+                        <TransformGroup>
+                            <RotateTransform Angle="0"/>
+                            <!-- Animated Property -->
+                        </TransformGroup>
+                    </Path.RenderTransform>
+                </Path>
+
+                <!--  Bath Door  -->
+                <Path Canvas.Left="590" Canvas.Top="200"
+                      Data="M 0,0 H 40 V 40 A 40,40 0 0 1 0,0"
+                      Style="{StaticResource InteractiveDoorStyle}"
+                      RenderTransformOrigin="0,0">
+                    <Path.RenderTransform>
+                        <TransformGroup>
+                            <RotateTransform Angle="0"/>
+                            <!-- Animated Property -->
+                            <ScaleTransform ScaleY="-1" />
+                            <!-- Fixed Flip -->
+                        </TransformGroup>
+                    </Path.RenderTransform>
+                </Path>
+
+            </Canvas>
+        </Viewbox>
+
+        <Button Width="50" Height="100" Margin="20,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center" Click="PrevButton_Click" Style="{StaticResource NavButtonStyle}">
+            <TextBlock FontFamily="/assets/fonts/#Coco Gothic" FontSize="40" FontWeight="Light" Foreground="#5D4037" Text="&lt;" />
+        </Button>
+
+        <Button Width="50" Height="100" Margin="0,0,20,0" HorizontalAlignment="Right" VerticalAlignment="Center" Click="NextButton_Click" Style="{StaticResource NavButtonStyle}">
+            <TextBlock FontFamily="/assets/fonts/#Coco Gothic" FontSize="40" FontWeight="Light" Foreground="#5D4037" Text="&gt;" />
+        </Button>
+    </Grid>
+</Page>

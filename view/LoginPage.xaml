@@ -1,0 +1,236 @@
+﻿<Page x:Class="hotel.view.LoginPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:hotel.view"
+      mc:Ignorable="d" 
+      d:DesignHeight="680" d:DesignWidth="1000"
+      Title="LoginPage"
+      Loaded="LoginPage_Loaded" 
+      MouseMove="Page_MouseMove">
+
+    <Page.Resources>
+        <!-- Existing Animations -->
+        <Storyboard x:Key="FadeOutStoryboard">
+            <DoubleAnimation Storyboard.TargetName="WelcomePanel" Storyboard.TargetProperty="Opacity" To="0.0" Duration="0:0:1"/>
+            <DoubleAnimation Storyboard.TargetName="IntroPanel" Storyboard.TargetProperty="Opacity" To="1.0" Duration="0:0:2"/>
+        </Storyboard>
+
+        <Storyboard x:Key="FadeInStoryboard">
+            <DoubleAnimation Storyboard.TargetName="WelcomePanel" Storyboard.TargetProperty="Opacity" To="1.0" Duration="0:0:0.5" />
+            <DoubleAnimation Storyboard.TargetName="IntroPanel" Storyboard.TargetProperty="Opacity" To="0.0" Duration="0:0:1"/>
+        </Storyboard>
+
+        <Storyboard x:Key="CreditsScrollStoryboard">
+            <DoubleAnimation Storyboard.TargetName="IntroPanel" Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)" From="800" To="-1500" Duration="0:0:20" RepeatBehavior="Forever" />
+        </Storyboard>
+
+        <Storyboard x:Key="PageFadeOut">
+            <DoubleAnimation Storyboard.TargetName="MainGrid" 
+                             Storyboard.TargetProperty="Opacity" 
+                             To="0.0" 
+                             Duration="0:0:0.5" />
+        </Storyboard>
+
+        <!-- NEW: Spotlight Button Style -->
+        <!-- This creates the transparent background that glows when hovered -->
+        <Style x:Key="SpotlightButtonStyle" TargetType="Button">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontFamily" Value="Coco Gothic"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Grid Background="Transparent">
+                            <!-- The Glow Effect -->
+                            <Border x:Name="Glow" Opacity="0">
+                                <Border.Background>
+                                    <RadialGradientBrush Center="0.5,0.5" GradientOrigin="0.5,0.5" RadiusX="0.8" RadiusY="0.8">
+                                        <GradientStop Color="#44FFFFFF" Offset="0"/>
+                                        <GradientStop Color="Transparent" Offset="1"/>
+                                    </RadialGradientBrush>
+                                </Border.Background>
+                            </Border>
+
+                            <!-- Button Content -->
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10,5"/>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <!-- Animate Glow on Hover -->
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Trigger.EnterActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetName="Glow" Storyboard.TargetProperty="Opacity" To="1.0" Duration="0:0:0.3"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </Trigger.EnterActions>
+                                <Trigger.ExitActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetName="Glow" Storyboard.TargetProperty="Opacity" To="0.0" Duration="0:0:0.3"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </Trigger.ExitActions>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Page.Resources>
+
+    <Grid x:Name="MainGrid">
+        <!-- Background Video -->
+        <MediaElement x:Name="BackgroundVideo" 
+                      Source="assets/bgmain.mp4" 
+                      LoadedBehavior="Manual"
+                      UnloadedBehavior="Stop"
+                      Stretch="UniformToFill"
+                      IsMuted="True"
+                      MediaEnded="BackgroundVideo_MediaEnded" />
+
+        <Rectangle Fill="#1e2a33" Opacity="0.7" />
+        <TextBlock Text="Kazenoya"
+                   FontFamily="/assets/fonts/#Parfumerie Script Regular"
+                   FontSize="39"
+                   Foreground="#F4F1ED"
+                   VerticalAlignment="Top"
+                   HorizontalAlignment="Left"
+                   Margin="30,10,10,0" Width="665"/>
+        <!-- NEW TOP NAVIGATION BAR -->
+        <!-- Horizontal StackPanel at Top Right -->
+        <StackPanel Orientation="Horizontal" 
+                    HorizontalAlignment="Right" 
+                    VerticalAlignment="Top" 
+                    Margin="0,35,40,0"
+                    Panel.ZIndex="10">
+            <!-- High Z-Index to ensure it's clickable -->
+
+            <!-- Catchy "Kazenoya" Text -->
+          
+
+            <!-- Accommodations Button -->
+            <Button Content="Accommodations" 
+                    Style="{StaticResource SpotlightButtonStyle}"
+                    Margin="0,0,20,0"/>
+
+            <!-- Sign In Button -->
+            <Button Content="Sign In" 
+                    Style="{StaticResource SpotlightButtonStyle}"/>
+        </StackPanel>
+
+
+        <!-- Hidden Standby Panel (Video only now, button moved up) -->
+        <Grid x:Name="StandbyPanel" Opacity="0">
+            <MediaElement x:Name="StandbyVideo" 
+                          Source="/assets/waitingLoginBG.mp4" 
+                          LoadedBehavior="Manual"
+                          UnloadedBehavior="Stop"
+                          Stretch="UniformToFill"
+                          IsMuted="True"
+                          MediaEnded="StandbyVideo_MediaEnded" />
+        </Grid>
+
+        <!-- Main Welcome Center Panel -->
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0 100 0 30"
+                    x:Name="WelcomePanel">
+
+            <TextBlock Text="W E L C O M E  T O"
+                       FontSize="14" Opacity="0.8" Foreground="#F4F1ED"
+                       TextAlignment="Center"
+                       FontFamily="/assets/fonts/#Coco Gothic" />
+
+            <TextBlock x:Name="KazenoyaTitle"
+                       Text="Kazenoya"
+                       FontFamily="/assets/fonts/#Parfumerie Script Regular" 
+                       FontSize="170" Foreground="#F4F1ED"
+                       TextAlignment="Center" Margin="0 10 0 0"/>
+
+            <TextBlock Text= "RESORT AND SPA HOTEL" 
+                       Foreground="#F4F1ED" FontSize="28" 
+                       Margin="0 , -150 ,0 ,0"
+                       VerticalAlignment="Center" HorizontalAlignment="Center"
+                       FontFamily="/assets/fonts/#Coco Gothic"/>
+
+            <Button Width="180" Height="35"
+                    Content="L E A R N   M O R E"
+                    Foreground="Black" FontWeight="DemiBold"
+                    Click="LearnMore_Click">
+                <Button.Style>
+                    <Style TargetType="Button">
+                        <Setter Property="VerticalAlignment" Value="Center" />
+                        <Setter Property="HorizontalAlignment" Value="Center" />
+                        <Setter Property="Margin" Value="0,20,0,0" />
+                        <Setter Property="Background" Value="White" />
+                        <Setter Property="BorderBrush" Value="Gray" />
+                        <Setter Property="BorderThickness" Value="1" />
+                        <Setter Property="RenderTransformOrigin" Value="0.5, 0.5" />
+                        <Setter Property="RenderTransform">
+                            <Setter.Value>
+                                <ScaleTransform ScaleX="1.0" ScaleY="1.0" />
+                            </Setter.Value>
+                        </Setter>
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="Button">
+                                    <Border x:Name="border" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="3">
+                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsEnabled" Value="False">
+                                            <Setter TargetName="border" Property="Background" Value="#EEEEEE"/>
+                                            <Setter Property="Foreground" Value="#AAAAAA"/>
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                        <Style.Triggers>
+                            <EventTrigger RoutedEvent="MouseEnter">
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)" To="1.1" Duration="0:0:0.2" />
+                                        <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)" To="1.1" Duration="0:0:0.2" />
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                            <EventTrigger RoutedEvent="MouseLeave">
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)" To="1.0" Duration="0:0:0.2" />
+                                        <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)" To="1.0" Duration="0:0:0.2" />
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+            </Button>
+        </StackPanel>
+
+        <!-- Credits Panel -->
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Top"
+                    x:Name="IntroPanel" 
+                    Opacity="0">
+
+            <StackPanel.RenderTransform>
+                <TranslateTransform Y="800" />
+            </StackPanel.RenderTransform>
+
+            <TextBlock FontFamily="Arial" FontSize="16" FontWeight="Bold" Foreground="White" Text="CPE211L(5831) - DATA STRUCTURES AND ALGORITHM" HorizontalAlignment="Center" TextAlignment="Center" />
+            <TextBlock Text="Kazenoya" FontFamily="/assets/fonts/#Parfumerie Script Regular" FontSize="140" Foreground="#F4F1ED" HorizontalAlignment="Center" TextAlignment="Center" Margin="0 10 0 0"/>
+            <TextBlock Text= "A Hotel Management System" Foreground="#F4F1ED" FontSize="26" Margin="0, 0, 0, 0" HorizontalAlignment="Center" FontFamily="/assets/fonts/#Coco Gothic"/>
+            <TextBlock Text= "Developed by:" Foreground="#F4F1ED" FontSize="20" Margin="0, 60, 0, 0" HorizontalAlignment="Center" FontFamily="/assets/fonts/#Coco Gothic"/>
+            <TextBlock FontFamily="Arial" FontSize="16" Foreground="White" Margin="0, 20, 0, 0" Text="Abonales, Zandrei Vhan M." HorizontalAlignment="Center" />
+            <TextBlock FontFamily="Arial" FontSize="16" Foreground="White" Text="Malapira, Lousienna Xiamer M." Margin="0, 10, 0, 0" HorizontalAlignment="Center" />
+            <TextBlock FontFamily="Arial" FontSize="16" Foreground="White" Text="Marapao, Jean Annith M." Margin="0, 10, 0, 0" HorizontalAlignment="Center" />
+        </StackPanel>
+
+    </Grid>
+</Page>

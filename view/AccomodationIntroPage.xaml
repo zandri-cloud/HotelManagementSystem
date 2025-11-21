@@ -1,0 +1,222 @@
+﻿<Page x:Class="hotel.view.AccomodationIntroPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+      Title="AccomodationIntroPage"
+      d:DesignHeight="680"
+      d:DesignWidth="1000"
+      Background="#f4f1ed"
+      Loaded="Page_Loaded"
+      mc:Ignorable="d">
+
+    <Page.Resources>
+        <!-- 1. ENTER ANIMATION: Slide IN from Right (On Load) -->
+        <Storyboard x:Key="SlideInRight">
+            <DoubleAnimation Storyboard.TargetName="MainContent"
+                             Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.X)"
+                             From="1000"
+                             To="0"
+                             Duration="0:0:0.6">
+                <DoubleAnimation.EasingFunction>
+                    <QuadraticEase EasingMode="EaseOut" />
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+            <DoubleAnimation Storyboard.TargetName="MainContent"
+                             Storyboard.TargetProperty="Opacity"
+                             From="0"
+                             To="1"
+                             Duration="0:0:0.6" />
+        </Storyboard>
+
+        <!-- 2. EXIT NEXT ANIMATION: Slide OUT to Left (Next Button) -->
+        <Storyboard x:Key="SlideOutLeft">
+            <DoubleAnimation Storyboard.TargetName="MainContent"
+                             Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.X)"
+                             To="-1500"
+                             Duration="0:0:0.6">
+                <DoubleAnimation.EasingFunction>
+                    <QuadraticEase EasingMode="EaseIn" />
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+            <DoubleAnimation Storyboard.TargetName="MainContent"
+                             Storyboard.TargetProperty="Opacity"
+                             To="0"
+                             Duration="0:0:0.6" />
+        </Storyboard>
+
+        <!-- 3. EXIT PREV ANIMATION: Slide OUT to Right (Previous Button) -->
+        <!-- THIS WAS MISSING -->
+        <Storyboard x:Key="SlideOutRight">
+            <DoubleAnimation Storyboard.TargetName="MainContent"
+                             Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.X)"
+                             To="1500"
+                             Duration="0:0:0.6">
+                <DoubleAnimation.EasingFunction>
+                    <QuadraticEase EasingMode="EaseIn" />
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+            <DoubleAnimation Storyboard.TargetName="MainContent"
+                             Storyboard.TargetProperty="Opacity"
+                             To="0"
+                             Duration="0:0:0.6" />
+        </Storyboard>
+
+        <!-- Card Hover Style -->
+        <Style x:Key="RisingGroupStyle" TargetType="FrameworkElement">
+            <Setter Property="RenderTransform">
+                <Setter.Value>
+                    <TranslateTransform Y="0" />
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Cursor" Value="Hand" />
+            <Style.Triggers>
+                <EventTrigger RoutedEvent="MouseEnter">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Duration="0:0:0.2"
+                                             Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
+                                             To="-10" />
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+                <EventTrigger RoutedEvent="MouseLeave">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Duration="0:0:0.2"
+                                             Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
+                                             To="0" />
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Nav Button Style -->
+        <Style x:Key="NavButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Opacity" Value="0.6"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Page.Resources>
+
+    <Grid>
+        <!-- HOME BUTTON -->
+        <Button HorizontalAlignment="Left" VerticalAlignment="Top"
+                Margin="30,30,0,0"
+                Background="Transparent" 
+                BorderBrush="Transparent"
+                Cursor="Hand"
+                Click="HomeButton_Click">
+
+            <Button.Content>
+                <TextBlock Text="🏠︎" FontSize="20" Foreground="#623e2a" FontWeight="Bold" FontFamily="/assets/fonts/#Coco Gothic"/>
+            </Button.Content>
+
+            <Button.Style>
+                <Style TargetType="Button">
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="Button">
+                                <Border Background="{TemplateBinding Background}">
+                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                    <Style.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Opacity" Value="0.6"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </Button.Style>
+        </Button>
+
+        <!-- Main Content Wrapper for Animations -->
+        <Grid x:Name="MainContent">
+            <Grid.RenderTransform>
+                <TranslateTransform X="0" Y="0" />
+            </Grid.RenderTransform>
+
+            <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                <StackPanel Margin="0,0,0,50">
+
+                    <TextBlock x:Name="PageTitle"
+                               Margin="0,50,0,0"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Top"
+                               FontFamily="/assets/fonts/#Catchy Mager"
+                               FontSize="50"
+                               Foreground="#623e2a"
+                               Text="Accomodations" />
+
+                    <UniformGrid Margin="50,50,50,0" Columns="3">
+
+                        <!-- CARD 1 -->
+                        <StackPanel Margin="10">
+                            <StackPanel Style="{StaticResource RisingGroupStyle}">
+                                <Image Height="200" Source="/assets/room1.jpg" Stretch="UniformToFill" />
+                                <Border Background="Transparent" BorderBrush="#623e2a" BorderThickness="1" Padding="10">
+                                    <TextBlock FontFamily="/assets/fonts/#Coco Gothic" FontSize="14" Foreground="#623e2a" HorizontalAlignment="Center" Text="2 Adults, 1 Child" />
+                                </Border>
+                            </StackPanel>
+                            <TextBlock x:Name="R1Title" Margin="0,15,0,0" HorizontalAlignment="Center" FontFamily="/assets/fonts/#Catchy Mager" FontSize="24" Foreground="#623e2a" Text="Standard Room" />
+                            <TextBlock x:Name="R1Desc" Margin="0,5,0,0" FontFamily="/assets/fonts/#Coco Gothic" FontSize="12" Foreground="#623e2a" Text="Cozy and comfortable." TextAlignment="Center" TextWrapping="Wrap" />
+                        </StackPanel>
+
+                        <!-- CARD 2 -->
+                        <StackPanel Margin="10">
+                            <StackPanel Style="{StaticResource RisingGroupStyle}">
+                                <Image Height="200" Source="/assets/room2.jpg" Stretch="UniformToFill"/>
+                                <Border BorderBrush="#623e2a" BorderThickness="1" Padding="10">
+                                    <TextBlock Text="2 Adults, 2 Children" Foreground="#623e2a" FontSize="14" HorizontalAlignment="Center" FontFamily="/assets/fonts/#Coco Gothic"/>
+                                </Border>
+                            </StackPanel>
+                            <TextBlock x:Name="R2Title" Text="Deluxe Room" Foreground="#623e2a" FontSize="24" Margin="0,15,0,0" HorizontalAlignment="Center" FontFamily="/assets/fonts/#Catchy Mager"/>
+                            <TextBlock x:Name="R2Desc" Margin="0,5,0,0" FontFamily="/assets/fonts/#Coco Gothic" FontSize="12" Foreground="#623e2a" Text="Spacious elegance for the family." TextAlignment="Center" TextWrapping="Wrap" />
+                        </StackPanel>
+
+                        <!-- CARD 3 -->
+                        <StackPanel Margin="10">
+                            <StackPanel Style="{StaticResource RisingGroupStyle}">
+                                <Image Height="200" Source="/assets/deluxeRoom.jpg" Stretch="UniformToFill"/>
+                                <Border BorderBrush="#623e2a" BorderThickness="1" Padding="10">
+                                    <TextBlock Text="1 Adult" Foreground="#623e2a" FontSize="14" HorizontalAlignment="Center" FontFamily="/assets/fonts/#Coco Gothic"/>
+                                </Border>
+                            </StackPanel>
+                            <TextBlock x:Name="R3Title" Text="Luxury Suite" Foreground="#623e2a" FontSize="24" Margin="0,15,0,0" HorizontalAlignment="Center" FontFamily="/assets/fonts/#Catchy Mager"/>
+                            <TextBlock x:Name="R3Desc" Margin="0,5,0,0" FontFamily="/assets/fonts/#Coco Gothic" FontSize="12" Foreground="#623e2a" Text="The ultimate experience in comfort." TextAlignment="Center" TextWrapping="Wrap" />
+                        </StackPanel>
+
+                    </UniformGrid>
+                </StackPanel>
+            </ScrollViewer>
+        </Grid>
+
+        <!-- Prev Button -->
+        <Button Width="50" Height="100" Margin="10,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center" Click="PrevButton_Click" Style="{StaticResource NavButtonStyle}">
+            <TextBlock FontFamily="/assets/fonts/#Coco Gothic" FontSize="40" FontWeight="Light" Foreground="#623e2a" Text="&lt;" />
+        </Button>
+
+        <!-- Next Button -->
+        <Button Width="50" Height="100" Margin="0,0,10,0" HorizontalAlignment="Right" VerticalAlignment="Center" Click="NextButton_Click" Style="{StaticResource NavButtonStyle}">
+            <TextBlock FontFamily="/assets/fonts/#Coco Gothic" FontSize="40" FontWeight="Light" Foreground="#623e2a" Text="&gt;" />
+        </Button>
+    </Grid>
+</Page>

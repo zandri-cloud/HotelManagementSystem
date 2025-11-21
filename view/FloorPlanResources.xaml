@@ -1,0 +1,89 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- 
+         FLOOR PLAN "TEXT MODE" ICONS (GEOMETRIES) 
+    -->
+
+    <!-- Single Bed -->
+    <Geometry x:Key="Icon_BedSingle">M 5,20 H 55 V 95 H 5 Z M 10,5 H 50 V 15 H 10 Z</Geometry>
+
+    <!-- Double Bed (Updated to look more like the image) -->
+    <Geometry x:Key="Icon_BedDouble">
+        M 0,20 H 100 V 110 H 0 Z 
+        M 5,5 H 45 V 15 H 5 Z 
+        M 55,5 H 95 V 15 H 55 Z
+        M 0,40 H 100
+        M 50,40 V 110
+    </Geometry>
+
+    <!-- Side Table (Small Square) -->
+    <Geometry x:Key="Icon_SideTable">M 0,0 H 30 V 30 H 0 Z</Geometry>
+
+    <!-- Chair (Top down view) -->
+    <Geometry x:Key="Icon_Chair">M 0,0 H 30 V 30 H 0 Z M 5,30 H 25 V 35 H 5 Z</Geometry>
+
+    <!-- Sofa (2-Seater) -->
+    <Geometry x:Key="Icon_Sofa">
+        M 0,0 H 40 V 80 H 0 Z 
+        M 30,5 H 35 V 75 H 30 Z 
+        M 0,40 H 40
+    </Geometry>
+
+    <!-- Round Table -->
+    <Geometry x:Key="Icon_TableRound">F1 M 25,25 L 25,25 A 20,20 0 1 1 25.01,25 Z</Geometry>
+
+    <!-- Rect Table (Dining) -->
+    <Geometry x:Key="Icon_TableRect">M 0,0 H 60 V 60 H 0 Z</Geometry>
+
+    <!-- Toilet -->
+    <Geometry x:Key="Icon_Toilet">M 10,0 H 30 V 10 H 10 Z M 5,10 H 35 V 25 A 15,15 0 0 1 5,25 Z</Geometry>
+
+    <!-- Sink (Kitchen/Bath) -->
+    <Geometry x:Key="Icon_Sink">M 0,0 H 40 V 30 H 0 Z M 5,5 H 35 V 25 H 5 Z M 20,10 V 15</Geometry>
+
+    <!-- Stove (4 Burners) -->
+    <Geometry x:Key="Icon_Stove">
+        M 0,0 H 40 V 40 H 0 Z
+        M 5,5  A 4,4 0 1 0 13,13
+        M 25,5 A 4,4 0 1 0 33,13
+        M 5,25 A 4,4 0 1 0 13,33
+        M 25,25 A 4,4 0 1 0 33,33
+    </Geometry>
+
+    <!-- Fridge -->
+    <Geometry x:Key="Icon_Fridge">M 0,0 H 40 V 40 H 0 Z M 0,38 H 40</Geometry>
+
+    <!-- Shower (Corner) -->
+    <Geometry x:Key="Icon_Shower">M 0,0 V 50 H 50 M 0,50 A 50,50 0 0 1 50,0 M 25,25 A 2,2 0 1 1 27,27</Geometry>
+
+    <!-- Door (Swing) -->
+    <Geometry x:Key="Icon_Door">M 0,0 V 40 H 5 V 0 Z M 5,0 A 40,40 0 0 1 45,40</Geometry>
+
+    <!-- 
+         STYLES
+    -->
+    <Style x:Key="FloorPlanObjectStyle" TargetType="Path">
+        <Setter Property="Fill" Value="Transparent"/>
+        <Setter Property="Stroke" Value="#5D4037"/>
+        <!-- Dark Brown (Wood) -->
+        <Setter Property="StrokeThickness" Value="1.5"/>
+        <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
+        <Setter Property="RenderTransform">
+            <Setter.Value>
+                <TransformGroup>
+                    <ScaleTransform/>
+                    <RotateTransform/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Thicker style for walls -->
+    <Style x:Key="WallStyle" TargetType="Path">
+        <Setter Property="Stroke" Value="#3E2723"/>
+        <Setter Property="StrokeThickness" Value="4"/>
+    </Style>
+
+</ResourceDictionary>

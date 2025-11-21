@@ -1,0 +1,26 @@
+﻿<UserControl x:Class="hotel.components.DatabaseStatus"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:hotel.components"
+             mc:Ignorable="d" 
+             d:DesignHeight="50" d:DesignWidth="200">
+
+    <UserControl.Resources>
+        <SolidColorBrush x:Key="Green500Brush" Color="#22c55e" />
+        <SolidColorBrush x:Key="Red500Brush" Color="#ef4444" />
+        <SolidColorBrush x:Key="Slate500Brush" Color="#64748b" />
+    </UserControl.Resources>
+
+    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+     
+        <Ellipse Width="8" Height="8"
+                 Fill="{Binding StatusBrush}"
+                 Margin="0 0 8 0"
+                 VerticalAlignment="Center"/>
+        <TextBlock Text="{Binding StatusText}"
+                   FontSize="14" 
+                   Foreground="{StaticResource Slate500Brush}"/>
+    </StackPanel>
+</UserControl>
